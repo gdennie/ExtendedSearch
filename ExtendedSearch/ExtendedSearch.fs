@@ -1,6 +1,4 @@
-﻿// Learn more about F# at http://fsharp.net
-
-namespace ExtendedSearch
+﻿namespace ExtendedSearch
 
     open System.Windows.Forms
     module UI =  
