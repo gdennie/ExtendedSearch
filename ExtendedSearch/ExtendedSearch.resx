@@ -109,11 +109,14 @@
       </xsd:complexType>
     </xsd:element>
   </xsd:schema>
+  <data name="VersionLabel">
+    <value>&amp;Version</value>
+  </data>
   <data name="SearchButtonCaption">
-    <value>Search</value>
+    <value>&amp;Search</value>
   </data>
   <data name="CancelButtonCaption">
-    <value>Cancel</value>
+    <value>&amp;Cancel</value>
   </data>
 </root>
     
