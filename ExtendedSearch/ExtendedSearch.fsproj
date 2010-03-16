@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{e448d3f8-b0a2-49e4-a4a2-b89d2abbc9f2}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>ExtendedSearch</RootNamespace>
     <AssemblyName>ExtendedSearch</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -36,6 +36,11 @@
     </WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="assemblyinfo.ExtendedSearch.exe.fs" />
+    <Compile Include="ExtendedSearch.fs" />
+    <EmbeddedResource Include="ExtendedSearch.resx" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core" />
     <Reference Include="System" />
@@ -43,10 +48,6 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Windows.Forms" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="assemblyinfo.ExtendedSearch.exe.fs" />
-    <Compile Include="ExtendedSearch.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\FSharp\1.0\Microsoft.FSharp.Targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
