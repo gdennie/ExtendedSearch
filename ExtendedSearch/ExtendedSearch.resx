@@ -109,6 +109,9 @@
       </xsd:complexType>
     </xsd:element>
   </xsd:schema>
+  <data name = "AppDisplayName">
+    <value>Extended Search</value>
+  </data>
   <data name="VersionLabel">
     <value>&amp;Version</value>
   </data>

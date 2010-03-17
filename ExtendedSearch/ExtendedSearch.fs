@@ -9,26 +9,34 @@
         let extendedSearchResourceManager = new ResourceManager("ExtendedSearch",Assembly.GetExecutingAssembly())
         let initialFormWidth = 500
         let initialFormHeight = 500
+        
+        let searchButtonControl = 
+            ///@Todo Add the default clickhandler 
+            new Button(Text = extendedSearchResourceManager.GetString("SearchButtonCaption"))
+        
+        let cancelButtonControl = 
+            ///@Todo Add the default clickhandler
+            new Button(Text = extendedSearchResourceManager.GetString("CancelButtonCaption"))
+                
+        let buttonPanel =
+            let panel = new Panel()
+            panel.Controls.Add(searchButtonControl)
+            panel.Controls.Add(cancelButtonControl)
+            panel
+            
         let versionSpecControl =
-            let versionLabel = extendedSearchResourceManager.GetString("VersionLabel")
             let majorTextBox = new TextBox()
             let minorTextBox = new TextBox()
             let revisionTextBox = new TextBox()
-            new Label(Text=versionLabel)
-  //          majorTextBox
+            new Panel(Text=extendedSearchResourceManager.GetString("VersionLabel"))
              
         [<EntryPoint>]
         let main(args:string[]) =
-            let esMainForm = new Form(Text="ExtendedSearch",TopMost=true,Width=initialFormWidth, Height=initialFormHeight)
+            let esMainForm = new Form(Text=extendedSearchResourceManager.GetString("AppDisplayName"),TopMost=true,Width=initialFormWidth, Height=initialFormHeight)
             
-            let version = versionSpecControl
+//            let version = versionSpecControl
+//            esMainForm.Controls.Add(versionSpecControl)
+            esMainForm.Controls.Add(buttonPanel)
             
-            let searchButtonCaption = extendedSearchResourceManager.GetString("SearchButtonCaption")
-            let searchButton = new Button(Text=searchButtonCaption, Width = 250, Location = new Point(0,435))
-            let cancelButtonCaption = extendedSearchResourceManager.GetString("CancelButtonCaption")
-            let cancelButton = new Button(Text=cancelButtonCaption, Width = 250, Location = new Point(250,435))
-            esMainForm.Controls.Add(version)
-            esMainForm.Controls.Add(searchButton)
-            esMainForm.Controls.Add(cancelButton)
             Application.Run(esMainForm)
             0
