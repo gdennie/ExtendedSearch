@@ -16,12 +16,12 @@
         
         let cancelButtonControl = 
             ///@Todo Add the default clickhandler
-            new Button(Text = extendedSearchResourceManager.GetString("CancelButtonCaption"), Dock=DockStyle.Right)
+            new Button(Text = extendedSearchResourceManager.GetString("CancelButtonCaption"), Dock=DockStyle.Left)
                 
         let buttonPanel =
             let panel = new Panel(Dock=DockStyle.Bottom)
-            panel.Controls.Add(searchButtonControl)
             panel.Controls.Add(cancelButtonControl)
+            panel.Controls.Add(searchButtonControl)
             panel
             
         let versionSpecControl =
