@@ -12,30 +12,31 @@
         
         let searchButtonControl = 
             ///@Todo Add the default clickhandler 
-            new Button(Text = extendedSearchResourceManager.GetString("SearchButtonCaption"))
+            new Button(Text = extendedSearchResourceManager.GetString("SearchButtonCaption"), Dock=DockStyle.Left)
         
         let cancelButtonControl = 
             ///@Todo Add the default clickhandler
-            new Button(Text = extendedSearchResourceManager.GetString("CancelButtonCaption"))
+            new Button(Text = extendedSearchResourceManager.GetString("CancelButtonCaption"), Dock=DockStyle.Right)
                 
         let buttonPanel =
-            let panel = new Panel()
+            let panel = new Panel(Dock=DockStyle.Bottom)
             panel.Controls.Add(searchButtonControl)
             panel.Controls.Add(cancelButtonControl)
             panel
             
         let versionSpecControl =
-            let majorTextBox = new TextBox()
+            let majorTextBox = new TextBox(Dock=DockStyle.Left)
             let minorTextBox = new TextBox()
-            let revisionTextBox = new TextBox()
-            new Panel(Text=extendedSearchResourceManager.GetString("VersionLabel"))
+            let revisionTextBox = new TextBox(Dock=DockStyle.Right)
+            let vscPanel = new Panel(Text=extendedSearchResourceManager.GetString("VersionLabel"),Dock=DockStyle.Top)
+            vscPanel
              
         [<EntryPoint>]
         let main(args:string[]) =
             let esMainForm = new Form(Text=extendedSearchResourceManager.GetString("AppDisplayName"),TopMost=true,Width=initialFormWidth, Height=initialFormHeight)
             
 //            let version = versionSpecControl
-//            esMainForm.Controls.Add(versionSpecControl)
+            esMainForm.Controls.Add(versionSpecControl)
             esMainForm.Controls.Add(buttonPanel)
             
             Application.Run(esMainForm)
