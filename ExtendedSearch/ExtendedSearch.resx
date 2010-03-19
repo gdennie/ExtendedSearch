@@ -112,8 +112,20 @@
   <data name = "AppDisplayName">
     <value>Extended Search</value>
   </data>
+  <data name="FileNameSpecLabel">
+    <value>File &amp;Name:</value>
+  </data>
+  <data name ="MajorVerDefault">
+    <value>1</value>
+  </data>
+  <data name="MinorVerDefault">
+    <value>0</value>
+  </data>
+  <data name="RevisionVerDefault">
+    <value>0</value>
+  </data>
   <data name="VersionLabel">
-    <value>&amp;Version</value>
+    <value>File &amp;Version:</value>
   </data>
   <data name="SearchButtonCaption">
     <value>&amp;Search</value>
