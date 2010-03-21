@@ -5,7 +5,7 @@
     open System.Reflection
     open System.Drawing
     
-    module UI =  
+    module UI =
         let extendedSearchResourceManager = new ResourceManager("ExtendedSearch",Assembly.GetExecutingAssembly())
         let initialFormWidth = 500
         let initialFormHeight = 500
@@ -26,9 +26,11 @@
             panel
             
         let fileNameSpecControl =  
+            let fnscLabel = new Label(Text=extendedSearchResourceManager.GetString("FileNameSpecLabel"),Dock=DockStyle.Left, Width = 150)
             let fnscTextBox = new TextBox(Dock=DockStyle.Left,Width=250)
-            let fnscLabel = new Label(Text=extendedSearchResourceManager.GetString("FileNameSpecLabel"),Dock=DockStyle.Left)
+            let fnscRecurseSubDirCheckBox = new CheckBox(Dock=DockStyle.Left,Text=extendedSearchResourceManager.GetString("RecurseIntoSubdirsLabel"))
             let fnscPanel = new Panel(Dock=(DockStyle.Fill &&& DockStyle.Top) ,Width = initialFormWidth, Height = initialFormHeight/20)
+            fnscPanel.Controls.Add(fnscRecurseSubDirCheckBox)
             fnscPanel.Controls.Add(fnscTextBox)
             fnscPanel.Controls.Add(fnscLabel)
             fnscPanel   

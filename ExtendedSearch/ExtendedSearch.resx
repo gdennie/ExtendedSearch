@@ -113,7 +113,10 @@
     <value>Extended Search</value>
   </data>
   <data name="FileNameSpecLabel">
-    <value>File &amp;Name:</value>
+    <value>File Path and &amp;Name Spec:</value>
+  </data>
+  <data name="RecurseIntoSubdirsLabel">
+    <value>Recurse Into Subdirectories</value>
   </data>
   <data name ="MajorVerDefault">
     <value>1</value>
