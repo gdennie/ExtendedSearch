@@ -12,12 +12,16 @@
         let initialFormWidth = 500
         let initialFormHeight = 500
         
-        let getAllFilesWhichMatchSpec path filespec verspec =
-            Directory.GetFiles(path, filespec, System.IO.SearchOption.AllDirectories)
+        let getAllFilesWhichMatchSpec path recurse filespec verspec =
+            let recurseOption = 
+                if recurse then
+                    System.IO.SearchOption.AllDirectories
+                else
+                    System.IO.SearchOption.TopDirectoryOnly
+            Directory.GetFiles(path, filespec, recurseOption)
             |> Seq.map FileVersionInfo.GetVersionInfo
-            |> Seq.filter (fun x -> x.ProductVersion = verspec)
-//            |> Seq.iter (fun x -> x.ToString() |> ignore)
-            |>Seq.toArray            
+            |> Seq.filter (fun fvi -> fvi.ProductVersion = verspec) //fvi = FileVersionInfo
+            (*Unauthorized Access Exception *)
             
             
             
@@ -62,13 +66,8 @@
                 ///@Todo Add the default clickhandler 
                 let searchButton = new Button(Text = extendedSearchResourceManager.GetString("SearchButtonCaption"), Width=initialFormWidth/2, Dock=DockStyle.Left)
                 searchButton.Click.Add(fun _ -> 
-                [|
-                    let fsres = getAllFilesWhichMatchSpec @"c:\users\onorio_development\documents\downloads" "*.exe" "6.0.180.79"
-                    for i in 0 .. fsres.Length - 1 ->
-                        resultsList.Items.Add(fsres.[i]) 
-                        |> ignore 
-                |] 
-                |> ignore)
+                        getAllFilesWhichMatchSpec @"c:\users\onorio_development\documents\downloads" true "*.exe" "6.0.180.79"
+                        |> Seq.iter (fun fs -> resultsList.Items.Add(fs) |> ignore))
                 searchButton
             
             let cancelButtonControl = 
