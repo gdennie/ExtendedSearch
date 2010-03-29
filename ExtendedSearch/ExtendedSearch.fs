@@ -3,7 +3,7 @@
     open System.Windows.Forms
     open System.Resources
     open System.Reflection
-    open System.Drawing
+//    open System.Drawing
     open System.IO
     open System.Diagnostics
     
@@ -13,21 +13,22 @@
         let initialFormHeight = 500
         
         let getAllFilesWhichMatchSpec path recurse filespec verspec =
-            let recurseOption = 
-                if recurse then
-                    System.IO.SearchOption.AllDirectories
-                else
-                    System.IO.SearchOption.TopDirectoryOnly
-            Directory.GetFiles(path, filespec, recurseOption)
-            |> Seq.map FileVersionInfo.GetVersionInfo
-            |> Seq.filter (fun fvi -> fvi.ProductVersion = verspec) //fvi = FileVersionInfo
-            (*Unauthorized Access Exception *)
-            
-            
+            try
+                let recurseOption = 
+                    if recurse then
+                        System.IO.SearchOption.AllDirectories
+                    else
+                        System.IO.SearchOption.TopDirectoryOnly
+                Directory.GetFiles(path, filespec, recurseOption)
+                |> Seq.map FileVersionInfo.GetVersionInfo
+                |> Seq.filter (fun fvi -> fvi.ProductVersion = verspec)//fvi = FileVersionInfo
+            with
+            | :? System.UnauthorizedAccessException -> Seq.empty //If the user doesn't have sufficient permissions 
+                                                                 //to read a directory
             
         [<EntryPoint>]
         let main(args:string[]) =
-            let esMainForm = new Form(Text=extendedSearchResourceManager.GetString("AppDisplayName"),TopMost=true,Width=initialFormWidth+5, Height=initialFormHeight, FormBorderStyle= FormBorderStyle.FixedDialog;)
+            let esMainForm = new Form(Text=extendedSearchResourceManager.GetString("AppDisplayName"),TopMost=true,Width=initialFormWidth+5, Height=initialFormHeight, FormBorderStyle= FormBorderStyle.FixedSingle;)
             
             (* FileDialog *)
             
@@ -35,7 +36,7 @@
             let fileNameSpecControl =  
                 let fnscLabel = new Label(Text=extendedSearchResourceManager.GetString("FileNameSpecLabel"),Dock=DockStyle.Left, Width = 150)
                 let fnscTextBox = new TextBox(Dock=DockStyle.Left,Width=250)
-                let fnscRecurseSubDirCheckBox = new CheckBox(Dock=DockStyle.Left,Text=extendedSearchResourceManager.GetString("RecurseIntoSubdirsLabel"))
+                let fnscRecurseSubDirCheckBox = new CheckBox(Dock=DockStyle.Left ,Text=extendedSearchResourceManager.GetString("RecurseIntoSubdirsLabel"))
                 let fnscPanel = new Panel(Dock=(DockStyle.Fill &&& DockStyle.Top) ,Width = initialFormWidth, Height = initialFormHeight/20)
                 fnscPanel.Controls.Add(fnscRecurseSubDirCheckBox)
                 fnscPanel.Controls.Add(fnscTextBox)
@@ -43,12 +44,14 @@
                 fnscPanel   
                 
             let fileVersionSpecControl =
-                let defaultTextBoxWidth = 120
-                let majorTextBox = new TextBox(Text = extendedSearchResourceManager.GetString("MajorVerDefault"),Dock=DockStyle.Left, Width=defaultTextBoxWidth)
-                let minorTextBox = new TextBox(Text = extendedSearchResourceManager.GetString("MinorVerDefault"),Dock=DockStyle.Left, Width=defaultTextBoxWidth)
-                let revisionTextBox = new TextBox(Text = extendedSearchResourceManager.GetString("RevisionVerDefault"),Dock=DockStyle.Left, Width=defaultTextBoxWidth)
+                let defaultTextBoxWidth = 95
+                let majorTextBox = new TextBox(Text = extendedSearchResourceManager.GetString("MajorVerDefault"), Dock=DockStyle.Left, Width=defaultTextBoxWidth)
+                let minorTextBox = new TextBox(Text = extendedSearchResourceManager.GetString("MinorVerDefault"), Dock=DockStyle.Left, Width=defaultTextBoxWidth)
+                let revisionTextBox = new TextBox(Text = extendedSearchResourceManager.GetString("RevisionVerDefault") , Dock=DockStyle.Left, Width=defaultTextBoxWidth)
+                let buildTextBox = new TextBox(Text = extendedSearchResourceManager.GetString("BuildVerDefault"), Dock=DockStyle.Left, Width=defaultTextBoxWidth)
                 let vscLabel = new Label(Text=extendedSearchResourceManager.GetString("VersionLabel"),Dock=DockStyle.Left)
                 let vscPanel = new Panel(Dock=(DockStyle.Fill &&& DockStyle.Top),Width=initialFormWidth, Height = initialFormHeight/20)
+                vscPanel.Controls.Add(buildTextBox)
                 vscPanel.Controls.Add(revisionTextBox)
                 vscPanel.Controls.Add(minorTextBox)
                 vscPanel.Controls.Add(majorTextBox)
@@ -62,12 +65,25 @@
             esMainForm.Controls.Add(fileVersionSpecControl)
             esMainForm.Controls.Add(fileNameSpecControl)
 
+            let verSpec() = 
+                      let verPartSeparator = "."
+                      fileVersionSpecControl.Controls.[3].Text + verPartSeparator
+                      + fileVersionSpecControl.Controls.[2].Text + verPartSeparator
+                      + fileVersionSpecControl.Controls.[1].Text + verPartSeparator
+                      + fileVersionSpecControl.Controls.[0].Text
+
             let searchButtonControl = 
                 ///@Todo Add the default clickhandler 
+                let basePath = @"c:\users\onorio_development\documents\downloads"
+                let recurse = true
+                let fileSpec = "*.exe"
+                
+                (*6.0.180.79 *)            
                 let searchButton = new Button(Text = extendedSearchResourceManager.GetString("SearchButtonCaption"), Width=initialFormWidth/2, Dock=DockStyle.Left)
                 searchButton.Click.Add(fun _ -> 
-                        getAllFilesWhichMatchSpec @"c:\users\onorio_development\documents\downloads" true "*.exe" "6.0.180.79"
-                        |> Seq.iter (fun fs -> resultsList.Items.Add(fs) |> ignore))
+                        let vs = verSpec()
+                        getAllFilesWhichMatchSpec basePath recurse fileSpec vs
+                        |> Seq.iter (fun fs -> resultsList.Items.Add(fs.FileName,fs.FileVersion)|> ignore))
                 searchButton
             
             let cancelButtonControl = 

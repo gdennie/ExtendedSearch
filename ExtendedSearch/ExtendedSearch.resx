@@ -127,6 +127,9 @@
   <data name="RevisionVerDefault">
     <value>0</value>
   </data>
+  <data name="BuildVerDefault">
+    <value>0</value>
+  </data>
   <data name="VersionLabel">
     <value>File &amp;Version:</value>
   </data>
