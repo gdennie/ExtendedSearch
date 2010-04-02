@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{e448d3f8-b0a2-49e4-a4a2-b89d2abbc9f2}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>ExtendedSearch</RootNamespace>
     <AssemblyName>ExtendedSearch</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>

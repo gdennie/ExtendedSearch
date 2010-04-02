@@ -112,8 +112,20 @@
   <data name = "AppDisplayName">
     <value>Extended Search</value>
   </data>
+  <data name="FilePathSpecLabel">
+    <value>Base File Path:</value>
+  </data>
+  <data name="FilePathSpecDefault">
+    <value>C:\</value>
+  </data>
+  <data name ="SelectDirButtonLabel">
+    <value>. . .</value>  
+  </data>  
   <data name="FileNameSpecLabel">
-    <value>File Path and &amp;Name Spec:</value>
+    <value>File Name Spec:</value>
+  </data>
+  <data name="FileNameSpecDefault">
+    <value>*.dll</value>
   </data>
   <data name="RecurseIntoSubdirsLabel">
     <value>Recurse Into Subdirectories</value>
