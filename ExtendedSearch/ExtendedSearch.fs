@@ -40,8 +40,11 @@
                 let fpscSelectDirButton = new Button(Dock=DockStyle.Left, TabIndex = 2,Text=extendedSearchResourceManager.GetString("SelectDirButtonLabel"))
                 fpscSelectDirButton.Click.Add(
                     fun _ -> 
-                        let fd = new System.Windows.Forms.OpenFileDialog(InitialDirectory = extendedSearchResourceManager.GetString("FilePathSpecDefault"))
-                        fd.ShowDialog()|> ignore)
+                        let fd = new System.Windows.Forms.FolderBrowserDialog(ShowNewFolderButton = false)
+                        let res = fd.ShowDialog()
+                        if res = DialogResult.OK then
+                            fpscTextBox.Text <- fd.SelectedPath
+                        )
  
                 fpscPanel.Controls.Add(fpscRecurseSubDirCheckBox)
                 fpscPanel.Controls.Add(fpscSelectDirButton)
@@ -88,10 +91,10 @@
                       + fileVersionSpecControl.Controls.[0].Text
                       
             let pathSpec() =
-                fileNameSpecControl.Controls.[1].Text
+                filePathSpecControl.Controls.[2].Text
                 
             let recurseIntoSubdirs() = 
-                let recurseControl = fileNameSpecControl.Controls.[0] :?> CheckBox
+                let recurseControl = filePathSpecControl.Controls.[0] :?> CheckBox
                 recurseControl.CheckState = CheckState.Checked
                
 
