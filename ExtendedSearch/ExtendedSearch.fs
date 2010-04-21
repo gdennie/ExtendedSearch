@@ -6,6 +6,7 @@
     open System.Reflection
     open System.IO
     open System.Diagnostics
+    open System.Text.RegularExpressions
     
     module UI =
         let extendedSearchResourceManager = new ResourceManager("ExtendedSearch",Assembly.GetExecutingAssembly())
@@ -15,22 +16,50 @@
         let initialButtonWidth = initialFormWidth/2 - 1
         let defaultDockLocation = DockStyle.Left
         
+        let nrGetSeqOfFilesWhichMatchSpec path filespec =
+            try
+                seq {
+                    for files in Directory.GetFiles(path,filespec) do
+                        yield files
+                    }
+ 
+            with   
+            | :? System.UnauthorizedAccessException ->  
+                Seq.empty
+                            
+        let rec GetSeqOfFilesWhichMatchSpec path filespec =
+            try
+               seq {
+                        for files in Directory.GetFiles(path, filespec) do
+                            yield files
+                        for subDir in Directory.GetDirectories(path) do
+                            yield! GetSeqOfFilesWhichMatchSpec subDir filespec
+                }
+            with 
+            | :? System.UnauthorizedAccessException ->
+                Seq.empty
+                            
+        
         let getAllFilesWhichMatchSpec path recurse filespec verspec =
             try
-                let recurseOption = 
+                let fSeq = 
                     if recurse then
-                        System.IO.SearchOption.AllDirectories
+                        GetSeqOfFilesWhichMatchSpec path filespec
                     else
-                        System.IO.SearchOption.TopDirectoryOnly
-                        
-                Directory.GetFiles(path, filespec, recurseOption)
+                        nrGetSeqOfFilesWhichMatchSpec path filespec
+                fSeq
                 |> Seq.map FileVersionInfo.GetVersionInfo
                 |> Seq.filter (fun fvi -> fvi.ProductVersion = verspec)//fvi = FileVersionInfo
                 
             with
-            | :? System.UnauthorizedAccessException -> Seq.empty //If the user doesn't have sufficient permissions 
-                                                                 //to read a directory
-            
+            | :? System.UnauthorizedAccessException -> 
+                MessageBox.Show("You don't have proper permissions") |> ignore
+                Seq.empty //If the user doesn't have sufficient permissions 
+                                                               //to read a directory
+        let ValidateVerField pattern verstring =
+            let m = Regex.Match(verstring, pattern) in 
+            m.Success
+
         [<STAThread>]
         [<EntryPoint>]
         let main(args:string[]) =
@@ -64,10 +93,23 @@
 
             let fileVersionSpecControl =
                 let defaultTextBoxWidth = 95
+
                 let majorTextBox = new TextBox(Text = extendedSearchResourceManager.GetString("MajorVerDefault"), Dock=defaultDockLocation, Width=defaultTextBoxWidth, TabIndex = 1)
+                majorTextBox.Validating.Add(fun cancelEvent ->
+                cancelEvent.Cancel <- not(ValidateVerField "^\d{1,6}$" majorTextBox.Text))
+                
                 let minorTextBox = new TextBox(Text = extendedSearchResourceManager.GetString("MinorVerDefault"), Dock=defaultDockLocation, Width=defaultTextBoxWidth, TabIndex = 2)
+                minorTextBox.Validating.Add(fun cancelEvent ->
+                cancelEvent.Cancel <- not(ValidateVerField "^\d{1,6}$" minorTextBox.Text))
+
                 let revisionTextBox = new TextBox(Text = extendedSearchResourceManager.GetString("RevisionVerDefault") , Dock=defaultDockLocation, Width=defaultTextBoxWidth, TabIndex = 3)
+                revisionTextBox.Validating.Add(fun cancelEvent ->
+                cancelEvent.Cancel <- not(ValidateVerField "^\d{1,6}$" revisionTextBox.Text))
+
                 let buildTextBox = new TextBox(Text = extendedSearchResourceManager.GetString("BuildVerDefault"), Dock=defaultDockLocation, Width=defaultTextBoxWidth, TabIndex = 4)
+                buildTextBox.Validating.Add(fun cancelEvent ->
+                cancelEvent.Cancel <- not(ValidateVerField "^\d{1,6}$" buildTextBox.Text))
+
                 let vscLabel = new Label(Text=extendedSearchResourceManager.GetString("VersionLabel"),Dock=defaultDockLocation)
                 let vscPanel = new Panel(Dock=(DockStyle.Fill &&& DockStyle.Top),Width=initialFormWidth, Height = initialFormHeight/20)
                 vscPanel.Controls.Add(buildTextBox)
