@@ -56,9 +56,14 @@
                 MessageBox.Show("You don't have proper permissions") |> ignore
                 Seq.empty //If the user doesn't have sufficient permissions 
                                                                //to read a directory
-        let ValidateVerField pattern verstring =
+        let reMatchString pattern verstring =
             let m = Regex.Match(verstring, pattern) in 
             m.Success
+            
+        let AddVerFieldValidation (tb:TextBox) =
+            tb.Validating.Add(fun ce ->
+                ce.Cancel <- not(reMatchString "^\d{1,6}$" tb.Text))
+                
 
         [<STAThread>]
         [<EntryPoint>]
@@ -94,28 +99,24 @@
             let fileVersionSpecControl =
                 let defaultTextBoxWidth = 95
 
-                let majorTextBox = new TextBox(Text = extendedSearchResourceManager.GetString("MajorVerDefault"), Dock=defaultDockLocation, Width=defaultTextBoxWidth, TabIndex = 1)
-                majorTextBox.Validating.Add(fun cancelEvent ->
-                cancelEvent.Cancel <- not(ValidateVerField "^\d{1,6}$" majorTextBox.Text))
+                let majorVer = new TextBox(Text = extendedSearchResourceManager.GetString("MajorVerDefault"), Dock=defaultDockLocation, Width=defaultTextBoxWidth, TabIndex = 1)
+                AddVerFieldValidation(majorVer)
                 
-                let minorTextBox = new TextBox(Text = extendedSearchResourceManager.GetString("MinorVerDefault"), Dock=defaultDockLocation, Width=defaultTextBoxWidth, TabIndex = 2)
-                minorTextBox.Validating.Add(fun cancelEvent ->
-                cancelEvent.Cancel <- not(ValidateVerField "^\d{1,6}$" minorTextBox.Text))
-
-                let revisionTextBox = new TextBox(Text = extendedSearchResourceManager.GetString("RevisionVerDefault") , Dock=defaultDockLocation, Width=defaultTextBoxWidth, TabIndex = 3)
-                revisionTextBox.Validating.Add(fun cancelEvent ->
-                cancelEvent.Cancel <- not(ValidateVerField "^\d{1,6}$" revisionTextBox.Text))
-
-                let buildTextBox = new TextBox(Text = extendedSearchResourceManager.GetString("BuildVerDefault"), Dock=defaultDockLocation, Width=defaultTextBoxWidth, TabIndex = 4)
-                buildTextBox.Validating.Add(fun cancelEvent ->
-                cancelEvent.Cancel <- not(ValidateVerField "^\d{1,6}$" buildTextBox.Text))
-
+                let minorVer = new TextBox(Text = extendedSearchResourceManager.GetString("MinorVerDefault"), Dock=defaultDockLocation, Width=defaultTextBoxWidth, TabIndex = 2)
+                AddVerFieldValidation(minorVer)
+                
+                let revisionVer = new TextBox(Text = extendedSearchResourceManager.GetString("RevisionVerDefault") , Dock=defaultDockLocation, Width=defaultTextBoxWidth, TabIndex = 3)
+                AddVerFieldValidation(revisionVer)
+                
+                let buildVer = new TextBox(Text = extendedSearchResourceManager.GetString("BuildVerDefault"), Dock=defaultDockLocation, Width=defaultTextBoxWidth, TabIndex = 4)
+                AddVerFieldValidation(buildVer)
+                
                 let vscLabel = new Label(Text=extendedSearchResourceManager.GetString("VersionLabel"),Dock=defaultDockLocation)
                 let vscPanel = new Panel(Dock=(DockStyle.Fill &&& DockStyle.Top),Width=initialFormWidth, Height = initialFormHeight/20)
-                vscPanel.Controls.Add(buildTextBox)
-                vscPanel.Controls.Add(revisionTextBox)
-                vscPanel.Controls.Add(minorTextBox)
-                vscPanel.Controls.Add(majorTextBox)
+                vscPanel.Controls.Add(buildVer)
+                vscPanel.Controls.Add(revisionVer)
+                vscPanel.Controls.Add(minorVer)
+                vscPanel.Controls.Add(majorVer)
                 vscPanel.Controls.Add(vscLabel)
                 vscPanel
 
@@ -161,7 +162,8 @@
             
             let cancelButtonControl = 
                 let cancelButton = new Button(Text = extendedSearchResourceManager.GetString("CancelButtonCaption"), Width=initialButtonWidth, Dock=DockStyle.Left, TabIndex = 2)
-                cancelButton.Click.Add(fun _ -> Application.Exit())
+                cancelButton.Click.Add(fun _ -> 
+                Application.Exit())
                 cancelButton
                     
             let buttonPanel =
