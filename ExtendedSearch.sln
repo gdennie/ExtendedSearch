@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ExtendedSearch", "ExtendedSearch\ExtendedSearch.fsproj", "{E448D3F8-B0A2-49E4-A4A2-B89D2ABBC9F2}"
 EndProject
 Global

@@ -25,7 +25,7 @@
  
             with   
             | :? System.UnauthorizedAccessException ->  
-                Seq.empty
+                Seq.empty 
                             
         let rec GetSeqOfFilesWhichMatchSpec path filespec =
             try
@@ -63,6 +63,15 @@
         let AddVerFieldValidation (tb:TextBox) =
             tb.Validating.Add(fun ce ->
                 ce.Cancel <- not(reMatchString "^\d{1,6}$" tb.Text))
+
+        type VerFieldControl(initialText, tabStop)=
+            inherit TextBox(
+                Dock=defaultDockLocation, 
+                Width=95,
+                TabIndex = tabStop, 
+                Text=initialText
+                )
+  
                 
 
         [<STAThread>]
@@ -97,18 +106,16 @@
                 fnscPanel   
 
             let fileVersionSpecControl =
-                let defaultTextBoxWidth = 95
-
-                let majorVer = new TextBox(Text = extendedSearchResourceManager.GetString("MajorVerDefault"), Dock=defaultDockLocation, Width=defaultTextBoxWidth, TabIndex = 1)
+                let majorVer = new VerFieldControl(extendedSearchResourceManager.GetString("MajorVerDefault"),1)
                 AddVerFieldValidation(majorVer)
                 
-                let minorVer = new TextBox(Text = extendedSearchResourceManager.GetString("MinorVerDefault"), Dock=defaultDockLocation, Width=defaultTextBoxWidth, TabIndex = 2)
+                let minorVer = new VerFieldControl(extendedSearchResourceManager.GetString("MinorVerDefault"),2)
                 AddVerFieldValidation(minorVer)
                 
-                let revisionVer = new TextBox(Text = extendedSearchResourceManager.GetString("RevisionVerDefault") , Dock=defaultDockLocation, Width=defaultTextBoxWidth, TabIndex = 3)
+                let revisionVer = new VerFieldControl(extendedSearchResourceManager.GetString("RevisionVerDefault"),3)
                 AddVerFieldValidation(revisionVer)
                 
-                let buildVer = new TextBox(Text = extendedSearchResourceManager.GetString("BuildVerDefault"), Dock=defaultDockLocation, Width=defaultTextBoxWidth, TabIndex = 4)
+                let buildVer = new VerFieldControl(extendedSearchResourceManager.GetString("BuildVerDefault"),4)
                 AddVerFieldValidation(buildVer)
                 
                 let vscLabel = new Label(Text=extendedSearchResourceManager.GetString("VersionLabel"),Dock=defaultDockLocation)
